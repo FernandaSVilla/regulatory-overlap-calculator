@@ -1,0 +1,116 @@
+# Matriz de obligaciones v1.0: dos decisiones automatizadas (alta de cuenta = A, solvencia = S)
+# Campos: id, decisión, marco, artículo, función, fase, evidencia
+import csv, itertools, collections
+O = [
+# --- Solvencia: Reglamento de IA (proveedor interno y responsable del despliegue)
+("IA-9","S","RIA","art. 9","gestión de riesgos del modelo","diseño","sistema documentado"),
+("IA-10","S","RIA","art. 10.2-10.5","calidad y representatividad de datos","datos","prácticas de gobernanza de datos"),
+("IA-11","S","RIA","art. 11 y anexo IV","documentación técnica del modelo","diseño","expediente técnico"),
+("IA-12","S","RIA","art. 12","registro de eventos","decisión","logs automáticos"),
+("IA-13","S","RIA","art. 13","información al usuario profesional","diseño","instrucciones de uso"),
+("IA-14","S","RIA","art. 14","intervención humana","decisión","medidas de supervisión"),
+("IA-15","S","RIA","art. 15","solidez y ciberseguridad","diseño","pruebas y métricas"),
+("IA-17","S","RIA","art. 17","sistema de gestión","gobierno","sistema de calidad"),
+("IA-18","S","RIA","arts. 18-19","conservación de documentación","post","archivo 10 años / logs"),
+("IA-43","S","RIA","art. 43.2 y anexo VI","validación previa","diseño","control interno"),
+("IA-47","S","RIA","arts. 47-49","declaración y registro de conformidad","diseño","declaración UE, marcado, base de datos"),
+("IA-72","S","RIA","art. 72","seguimiento posterior","post","plan de seguimiento"),
+("IA-73","S","RIA","art. 73","notificación de incidentes","post","notificación"),
+("IA-26.2","S","RIA","art. 26.2","intervención humana","decisión","personas asignadas"),
+("IA-26.4","S","RIA","art. 26.4","calidad y representatividad de datos","datos","control de datos de entrada"),
+("IA-26.5","S","RIA","art. 26.5","seguimiento posterior","post","vigilancia del uso"),
+("IA-26.6","S","RIA","art. 26.6","registro de eventos","post","conservación de logs"),
+("IA-26.11","S","RIA","art. 26.11","información a la persona","decisión","aviso de uso de sistema"),
+("IA-27","S","RIA","art. 27","evaluación de impacto","diseño","FRIA"),
+("IA-86","S","RIA","art. 86","explicación individual","post","explicación"),
+("IA-4","S","RIA","art. 4","competencia del personal","gobierno","formación"),
+# --- Solvencia: RGPD
+("RGPD-5c","S","RGPD","art. 5.1.c","minimización de datos","datos","justificación de variables"),
+("RGPD-9","S","RGPD","art. 9","categorías especiales","datos","base jurídica"),
+("RGPD-13","S","RGPD","arts. 13.2.f y 14.2.g","información a la persona","decisión","información sobre lógica"),
+("RGPD-15","S","RGPD","art. 15.1.h","explicación individual","post","acceso a la lógica"),
+("RGPD-22","S","RGPD","art. 22.3","intervención humana","post","intervención, punto de vista, impugnación"),
+("RGPD-25","S","RGPD","art. 25","gestión de riesgos del modelo","diseño","privacidad desde el diseño"),
+("RGPD-30","S","RGPD","art. 30","conservación de documentación","gobierno","registro de actividades"),
+("RGPD-35","S","RGPD","art. 35","evaluación de impacto","diseño","EIPD"),
+# --- Solvencia: Directiva 2023/2225
+("CCD-18.1","S","CCD2","art. 18.1-18.2","calidad y representatividad de datos","datos","información pertinente y exacta"),
+("CCD-18.3","S","CCD2","art. 18.3","categorías especiales","datos","exclusión de datos"),
+("CCD-18.8","S","CCD2","art. 18.8","intervención humana","post","intervención, explicación, revisión"),
+# --- Solvencia: EBA/GL/2020/06 y DORA
+("EBA20-54","S","EBA/GL/2020/06","párr. 54","documentación técnica del modelo","diseño","comprensión y documentación"),
+("EBA20-55","S","EBA/GL/2020/06","párr. 55","seguimiento posterior","post","seguimiento y juicio experto"),
+("DORA-6","S","DORA","arts. 5-6","solidez y ciberseguridad","gobierno","marco de riesgo TIC"),
+("DORA-19","S","DORA","arts. 17-19","notificación de incidentes","post","notificación"),
+("DORA-28","S","DORA","art. 28.3","registro de proveedores","gobierno","registro de información"),
+# --- Alta de cuenta
+("PAD-15","A","Dir. 2014/92/UE","art. 15","no discriminación en el acceso","decisión","criterios de aceptación"),
+("PAD-16.4","A","Dir. 2014/92/UE","art. 16.4","denegación por blanqueo","decisión","motivo de denegación"),
+("RDL-5","A","RDL 19/2017","arts. 4-5","comunicación de la denegación","post","negativa escrita y plazo"),
+("L10-7.3","A","Ley 10/2010","art. 7.3","denegación por blanqueo","decisión","imposibilidad de diligencia"),
+("EBA23-10","A","EBA/GL/2023/04","párrs. 10-12","no discriminación en el acceso","decisión","evaluación individual"),
+("EBA23-14","A","EBA/GL/2023/04","párr. 14","conservación de documentación","post","documentación del rechazo"),
+("EBA23-20","A","EBA/GL/2023/04","párrs. 20-21","alternativas proporcionadas","decisión","funcionalidad limitada"),
+("AMLR-76.5","A","AMLR","art. 76.5","intervención humana","decisión","intervención humana significativa"),
+("AMLR-AII","A","AMLR","anexo II.2.d","alternativas proporcionadas","decisión","diligencia simplificada"),
+("AMLR-77","A","AMLR","art. 77","conservación de documentación","post","conservación 5 años"),
+("RGPD-22A","A","RGPD","art. 22.3","intervención humana","post","intervención, punto de vista, impugnación"),
+("RGPD-5cA","A","RGPD","art. 5.1.c y 5.1.e","minimización de datos","datos","minimización y plazo"),
+("RGPD-35A","A","RGPD","art. 35","evaluación de impacto","diseño","EIPD"),
+]
+# Relaciones entre obligaciones de marcos distintos con la misma función (codificación de la autora)
+# I = idéntica o compatible; D = solapada con definición distinta; C = en tensión; N = integrada por norma expresa
+R = {
+("IA-9","RGPD-25"):"D", ("IA-9","EBA20-54"):"N",            # art. 9.10: integrable en procesos de riesgo de otra norma
+("IA-10","CCD-18.1"):"D", ("IA-10","RGPD-5c"):"C", ("IA-26.4","CCD-18.1"):"D", ("IA-26.4","RGPD-5c"):"C",
+("IA-11","EBA20-54"):"D",
+("IA-12","DORA-6"):"I",
+("IA-14","RGPD-22"):"D", ("IA-14","CCD-18.8"):"D", ("IA-26.2","RGPD-22"):"D", ("IA-26.2","CCD-18.8"):"D",
+("RGPD-22","CCD-18.8"):"D",
+("IA-15","DORA-6"):"I",
+("IA-17","DORA-6"):"N",                                    # art. 17.4: gobierno interno financiero
+("IA-26.6","DORA-6"):"N",          # arts. 18.3 / 26.6: documentación financiera
+("IA-72","EBA20-55"):"N", ("IA-26.5","EBA20-55"):"N",       # arts. 72.4 / 26.5 párr. 2º
+("IA-73","DORA-19"):"N",                                    # art. 73.9: notificación limitada
+("IA-26.11","RGPD-13"):"D",
+("IA-27","RGPD-35"):"N",                                    # art. 27.4
+("IA-86","RGPD-15"):"N", ("IA-86","CCD-18.8"):"N", ("RGPD-15","CCD-18.8"):"D",  # art. 86.3 subsidiariedad
+("RGPD-9","CCD-18.3"):"I",
+# alta de cuenta
+("PAD-15","EBA23-10"):"I",
+("PAD-16.4","L10-7.3"):"D",
+("EBA23-14","AMLR-77"):"I", ("EBA23-14","RGPD-5cA"):"C", ("AMLR-77","RGPD-5cA"):"I",
+("EBA23-20","AMLR-AII"):"I",
+("AMLR-76.5","RGPD-22A"):"D",
+}
+ids={o[0]:o for o in O}
+for a,b in R: assert a in ids and b in ids and ids[a][2]!=ids[b][2], (a,b)
+deg=collections.defaultdict(set)
+for (a,b),v in R.items(): deg[a].add(v); deg[b].add(v)
+def stats(dec):
+    obs=[o for o in O if o[1]==dec]; n=len(obs)
+    over=[o for o in obs if o[0] in deg]
+    rels={k:v for k,v in R.items() if ids[k[0]][1]==dec}
+    c=collections.Counter(rels.values())
+    return n,len(over),c,len(rels)
+for d in "SA":
+    n,ov,c,nr=stats(d); print(d,"oblig",n,"con equivalente",ov,f"{ov/n:.0%}","relaciones",nr,dict(c),
+      "divergencia (D+C)/rel",f"{(c['D']+c['C'])/nr:.0%}","integradas N",f"{c['N']/nr:.0%}")
+n=len(O); ov=sum(1 for o in O if o[0] in deg); c=collections.Counter(R.values())
+print("TOTAL",n,ov,f"{ov/n:.0%}",len(R),dict(c),f"div {(c['D']+c['C'])/len(R):.0%}")
+# por función: cuántos marcos regulan la misma función
+fm=collections.defaultdict(set)
+for o in O: fm[(o[1],o[4])].add(o[2])
+multi=[(k,sorted(v)) for k,v in fm.items() if len(v)>1]
+print("funciones",len(fm),"con >1 marco",len(multi))
+for k,v in sorted(multi,key=lambda x:-len(x[1])): print(" ",k,v)
+with open("../datos/matriz_obligaciones_v1.csv","w",newline="",encoding="utf-8") as f:
+    w=csv.writer(f); w.writerow(["id","decision","marco","articulo","funcion","fase","evidencia"]); w.writerows(O)
+with open("../datos/relaciones_v1.csv","w",newline="",encoding="utf-8") as f:
+    w=csv.writer(f); w.writerow(["obligacion_a","obligacion_b","relacion"]); [w.writerow([a,b,v]) for (a,b),v in R.items()]
+PERS={"intervención humana","información a la persona","explicación individual","comunicación de la denegación",
+      "no discriminación en el acceso","alternativas proporcionadas","denegación por blanqueo"}
+for lab,test in (("persona",lambda f:f in PERS),("interna",lambda f:f not in PERS)):
+    rel={k:v for k,v in R.items() if test(ids[k[0]][4])}
+    c=collections.Counter(rel.values()); print(lab,len(rel),dict(c),
+      f"N {c['N']/len(rel):.0%}", f"D+C {(c['D']+c['C'])/len(rel):.0%}")

@@ -1,0 +1,235 @@
+<title>Regulatory Overlap Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de supuestos a la izquierda (formulario de expediente) y resultados a la derecha; en móvil, apilados. */
+:root{
+  --bg:#f5f6f4; --paper:#ffffff; --ink:#18232b; --muted:#5b6872; --rule:#d9dedd;
+  --accent:#145c6e; --accent-soft:#e3eef0; --warn:#9a5b12; --neg:#7d3b8a;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181d; --paper:#18222a; --ink:#e6ecee; --muted:#9aa8b1; --rule:#2c3a44;
+  --accent:#5fb3c6; --accent-soft:#1c3640; --warn:#e0a458; --neg:#c79ad1; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11181d; --paper:#18222a; --ink:#e6ecee; --muted:#9aa8b1; --rule:#2c3a44;
+  --accent:#5fb3c6; --accent-soft:#1c3640; --warn:#e0a458; --neg:#c79ad1; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;gap:24px}
+header{display:grid;gap:6px;max-width:72ch}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:650 clamp(26px,4vw,36px)/1.15 var(--display);margin:0;text-wrap:balance}
+h2{font:600 18px/1.3 var(--display);margin:0 0 4px}
+p{margin:0}
+.lede{color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px;display:grid;gap:16px;min-width:0}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:10px}
+legend{font:600 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field{display:grid;grid-template-columns:1fr 112px;gap:8px;align-items:center}
+label{font-size:14px}
+label small{display:block;color:var(--muted);font-size:12px}
+input,select{font:500 14px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:6px 8px;width:100%;font-variant-numeric:tabular-nums}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:3px}
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.seg button{font:500 13px var(--body);border:0;background:transparent;color:var(--muted);padding:7px 4px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{border-top:3px solid var(--rule);padding-top:10px;display:grid;gap:2px}
+.kpi.main{border-top-color:var(--accent)}
+.kpi .k{font-size:13px;color:var(--muted)}
+.kpi .v{font:500 26px/1.15 var(--mono);font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font:600 12px var(--body);color:var(--muted)}
+td{font-family:var(--mono)}
+td:first-child{font-family:var(--body)}
+tr.sel td{background:var(--accent-soft)}
+.formula{font:13px/1.6 var(--mono);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto;white-space:nowrap}
+.note{font-size:13px;color:var(--muted)}
+.cite{display:grid;gap:8px}
+.cite pre{margin:0;font:13px/1.5 var(--mono);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word}
+.btn{font:500 13px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:6px;padding:8px 12px;cursor:pointer;justify-self:start}
+svg text{font-family:var(--mono)}
+footer{font-size:12px;color:var(--muted);max-width:80ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Versión 1.0 · octubre de 2026 · Simplificar sin desproteger</span>
+    <h1>Regulatory Overlap Calculator</h1>
+    <p class="lede" style="font-weight:500;color:var(--ink)">Importe mínimo rentable y coste de la superposición regulatoria en la IA bancaria</p>
+    <p class="lede">Calcula cuánto elevan los costes de cumplir el Reglamento de IA, el RGPD, la Directiva 2023/2225 y el AMLR el importe a partir del cual un crédito al consumo compensa, según el tamaño de la entidad, el nivel de integración de las obligaciones y el diseño de la revisión humana. Los valores por defecto son los del ensayo. Ningún dato introducido se guarda ni se envía.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="f" autocomplete="off">
+      <fieldset>
+        <legend>Entidad</legend>
+        <div class="seg" role="group" aria-label="Perfil de entidad" id="perfil">
+          <button type="button" data-n="250000">Gran grupo</button>
+          <button type="button" data-n="25000">Mediana</button>
+          <button type="button" data-n="2500" aria-pressed="true">Cooperativa</button>
+        </div>
+        <div class="field"><label for="N">Préstamos aprobados por modelo al año<small>N</small></label><input id="N" type="number" min="1" step="1" value="2500"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Integración de obligaciones por modelo</legend>
+        <div class="seg" role="group" aria-label="Nivel de integración" id="integ">
+          <button type="button" data-d="0">Ninguna</button>
+          <button type="button" data-d="0.381" aria-pressed="true">Actual</button>
+          <button type="button" data-d="0.762">Expediente único</button>
+        </div>
+        <div class="field"><label for="d">Descuento por integración<small>d, de la matriz</small></label><input id="d" type="number" min="0" max="1" step="0.001" value="0.381"></div>
+        <div class="field"><label for="C">Coste anual por modelo (€)<small>C_mod, Renda et al. (2021)</small></label><input id="C" type="number" min="0" step="100" value="29277"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Revisión humana de denegaciones</legend>
+        <div class="seg two" role="group" aria-label="Diseño de la revisión" id="rev">
+          <button type="button" data-q="0.10" aria-pressed="true">A petición</button>
+          <button type="button" data-q="1">Previa a toda denegación</button>
+        </div>
+        <div class="field"><label for="q">Denegaciones revisadas<small>q, entre 0 y 1</small></label><input id="q" type="number" min="0" max="1" step="0.01" value="0.10"></div>
+        <div class="field"><label for="trev">Horas por revisión<small>t_rev</small></label><input id="trev" type="number" min="0" step="0.05" value="0.5"></div>
+        <div class="field"><label for="tx">Horas de explicación y comunicación<small>t_x, por denegación</small></label><input id="tx" type="number" min="0" step="0.05" value="0.1"></div>
+        <div class="field"><label for="P">Coste por hora (€)<small>P, INE EAES 2024, sección K</small></label><input id="P" type="number" min="0" step="1" value="40"></div>
+        <div class="field"><label for="a">Tasa de aprobación<small>a</small></label><input id="a" type="number" min="0.01" max="1" step="0.01" value="0.60"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Préstamo y mercado</legend>
+        <div class="field"><label for="r">Tipo del préstamo (%)<small>r, BdE TEDR consumo, ago. 2026</small></label><input id="r" type="number" step="0.01" value="7.16"></div>
+        <div class="field"><label for="fc">Coste de financiación (%)<small>f, euríbor 12 m, media 2026</small></label><input id="fc" type="number" step="0.01" value="2.72"></div>
+        <div class="field"><label for="el">Pérdida esperada anual (%)<small>PD·LGD</small></label><input id="el" type="number" step="0.1" value="2.0"></div>
+        <div class="field"><label for="n">Plazo (años)<small>n, amortización mensual</small></label><input id="n" type="number" min="0.5" step="0.5" value="3"></div>
+        <div class="field"><label for="cop">Coste operativo de originación (€)<small>c_op, no afecta a ΔL*</small></label><input id="cop" type="number" min="0" step="10" value="150"></div>
+      </fieldset>
+      <button type="button" class="btn" id="reset">Restablecer valores del ensayo</button>
+    </form>
+
+    <div style="display:grid;gap:24px;min-width:0">
+      <section class="panel" aria-live="polite">
+        <h2>Resultado</h2>
+        <div class="kpis">
+          <div class="kpi main"><span class="k">Aumento del importe mínimo por costes regulatorios</span><span class="v" id="o_dL">–</span><span class="s">ΔL*, independiente de c_op</span></div>
+          <div class="kpi"><span class="k">Importe mínimo rentable</span><span class="v" id="o_L">–</span><span class="s" id="o_L0">–</span></div>
+          <div class="kpi"><span class="k">Coste regulatorio por préstamo concedido</span><span class="v" id="o_c">–</span><span class="s" id="o_split">–</span></div>
+        </div>
+        <p class="note" id="o_m">–</p>
+      </section>
+
+      <section class="panel">
+        <h2>Comparación por perfil e integración</h2>
+        <p class="note">Aumento del importe mínimo (ΔL*, €) con el diseño de revisión y los parámetros de mercado elegidos. La fila resaltada es tu perfil.</p>
+        <div class="tablewrap"><table id="cmp"><thead><tr><th>Perfil (N)</th><th>Ninguna</th><th>Actual</th><th>Expediente único</th><th>Ahorro máximo</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="panel">
+        <h2>Qué variable pesa más</h2>
+        <p class="note">Cambio del importe mínimo rentable (€) al mover cada parámetro un 20 % abajo (morado) y arriba (azul), con los demás fijos.</p>
+        <div class="tablewrap"><svg id="tor" role="img" aria-label="Análisis de sensibilidad del importe mínimo rentable" width="100%"></svg></div>
+      </section>
+
+      <section class="panel">
+        <h2>Cómo se calcula</h2>
+        <div class="formula">L* = (c_op + c_reg + c_mod) / [(r − f − PD·LGD) · s · n]</div>
+        <div class="formula">c_reg = (1 − a)/a · (q · t_rev + t_x) · P  &nbsp;&nbsp;·&nbsp;&nbsp;  c_mod = C_mod · (1 − d) / N</div>
+        <p class="note">s es el saldo medio del préstamo como fracción del importe, con amortización francesa mensual. El modelo no incluye comisiones, coste de capital, amortización anticipada ni descuento temporal. Los perfiles de entidad son ilustrativos. El descuento d procede de la matriz de obligaciones del ensayo: 0,381 es la parte de las obligaciones del Reglamento de IA sobre solvencia ya integradas por norma expresa (8 de 21) y 0,762 la parte que tiene equivalente en otro marco (16 de 21).</p>
+      </section>
+
+      <section class="panel cite">
+        <h2>Cómo citarla</h2>
+        <pre id="citeText">Sánchez-Villa, M. F. (2026). Regulatory Overlap Calculator: importe mínimo rentable y coste de la superposición regulatoria en la IA bancaria (versión 1.0) [Software]. Zenodo. DOI asignado en el depósito.</pre>
+        <button type="button" class="btn" id="copy">Copiar cita</button>
+        <p class="note">Cada versión tiene su DOI. Cita la versión exacta con la que obtuviste un resultado. Licencias: Apache 2.0 (código) y CC BY 4.0 (datos). Código y datos: github.com/FernandaSVilla/regulatory-overlap-calculator.</p>
+      </section>
+    </div>
+  </div>
+  <footer>Acompaña al ensayo «Simplificar sin desproteger», V Premio Federico Prades-IEBF 2026. Fuentes de los valores por defecto: Banco de España, Boletín Estadístico, tabla 19.4; INE, Encuesta Anual de Estructura Salarial 2024; Renda et al. (2021), estudio de apoyo a la evaluación de impacto del Reglamento de IA, Comisión Europea, doi:10.2759/523404.</footer>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const DEF={N:2500,d:0.381,C:29277,q:0.10,trev:0.5,tx:0.1,P:40,a:0.60,r:7.16,fc:2.72,el:2.0,n:3,cop:150};
+  const PROF=[["Gran grupo",250000],["Entidad mediana",25000],["Cooperativa",2500]];
+  const eur=v=>isFinite(v)?Math.round(v).toLocaleString('es-ES')+' €':'no rentable';
+  const eur2=v=>v.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+  function sfrac(r,n){const i=r/12,N=Math.max(1,Math.round(n*12));const pay=i===0?1/N:i/(1-Math.pow(1+i,-N));let B=1,t=0;for(let k=0;k<N;k++){t+=B;B=i===0?B-pay:B*(1+i)-pay}return t/N}
+  function read(){const p={};for(const k in DEF){const v=parseFloat($(k).value);p[k]=isNaN(v)?DEF[k]:v}return p}
+  function calc(p){
+    const r=p.r/100,f=p.fc/100,el=p.el/100;
+    const m=(r-f-el)*sfrac(r,p.n)*p.n;
+    const cmod=p.C*(1-p.d)/p.N;
+    const creg=(1-p.a)/p.a*(p.q*p.trev+p.tx)*p.P;
+    const ok=m>0;
+    return {m,cmod,creg,L0:ok?p.cop/m:Infinity,L:ok?(p.cop+cmod+creg)/m:Infinity,dL:ok?(cmod+creg)/m:Infinity};
+  }
+  function press(groupId,attr,val){for(const b of $(groupId).querySelectorAll('button')){b.setAttribute('aria-pressed',String(Math.abs(parseFloat(b.dataset[attr])-val)<1e-9))}}
+  function render(){
+    const p=read(),o=calc(p);
+    press('perfil','n',p.N);press('integ','d',p.d);press('rev','q',p.q);
+    $('o_dL').textContent=isFinite(o.dL)?'+'+eur(o.dL):'no rentable';
+    $('o_L').textContent=eur(o.L);
+    $('o_L0').textContent='Sin costes regulatorios: '+eur(o.L0);
+    $('o_c').textContent=eur2(o.cmod+o.creg);
+    const sh=(o.cmod+o.creg)>0?Math.round(100*o.cmod/(o.cmod+o.creg)):0;
+    $('o_split').textContent='Por modelo '+eur2(o.cmod)+' ('+sh+' %) · por decisión '+eur2(o.creg);
+    $('o_m').textContent=o.m>0?('Margen esperado por euro prestado durante la vida del préstamo: '+(o.m*100).toLocaleString('es-ES',{maximumFractionDigits:2})+' céntimos.'):'Con estos supuestos el diferencial neto es negativo: ningún importe es rentable.';
+    // tabla
+    const tb=$('cmp').querySelector('tbody');tb.innerHTML='';
+    for(const [name,N] of PROF.concat(PROF.some(x=>x[1]===p.N)?[]:[["Tu entidad",p.N]])){
+      const v=[0,0.381,0.762].map(d=>calc(Object.assign({},p,{N,d})).dL);
+      const tr=document.createElement('tr');if(N===p.N)tr.className='sel';
+      tr.innerHTML='<td>'+name+' ('+N.toLocaleString('es-ES')+')</td>'+v.map(x=>'<td>'+eur(x)+'</td>').join('')+'<td>'+eur(v[0]-v[2])+'</td>';
+      tb.appendChild(tr);
+    }
+    tornado(p,o);
+  }
+  function tornado(p,o){
+    const names={r:'Tipo del préstamo',fc:'Coste de financiación',n:'Plazo',el:'Pérdida esperada',cop:'Coste operativo',a:'Tasa de aprobación',N:'Préstamos por modelo',C:'Coste por modelo',d:'Descuento por integración',P:'Coste por hora',q:'Denegaciones revisadas',trev:'Horas por revisión',tx:'Horas de explicación'};
+    const rows=[];
+    for(const k in names){
+      const lo=Object.assign({},p),hi=Object.assign({},p);lo[k]=p[k]*0.8;hi[k]=p[k]*1.2;
+      const a=calc(lo).L-o.L,b=calc(hi).L-o.L;
+      if(isFinite(a)&&isFinite(b))rows.push([names[k],a,b]);
+    }
+    rows.sort((x,y)=>Math.max(Math.abs(y[1]),Math.abs(y[2]))-Math.max(Math.abs(x[1]),Math.abs(x[2])));
+    const W=640,lab=190,rowH=26,top=10,H=top+rows.length*rowH+30;
+    const mx=Math.max(1,...rows.map(r=>Math.max(Math.abs(r[1]),Math.abs(r[2]))));
+    const cx=lab+(W-lab-20)/2,sc=(W-lab-20)/2/mx;
+    const cs=getComputedStyle(document.documentElement);
+    const ink=cs.getPropertyValue('--ink').trim(),mut=cs.getPropertyValue('--muted').trim(),acc=cs.getPropertyValue('--accent').trim(),neg=cs.getPropertyValue('--neg').trim(),rule=cs.getPropertyValue('--rule').trim();
+    let s='<line x1="'+cx+'" x2="'+cx+'" y1="'+top+'" y2="'+(H-24)+'" stroke="'+rule+'"/>';
+    rows.forEach((r,i)=>{
+      const y=top+i*rowH;
+      s+='<text x="0" y="'+(y+16)+'" font-size="12" fill="'+ink+'">'+r[0]+'</text>';
+      for(const [v,c] of [[r[1],neg],[r[2],acc]]){
+        const w=Math.abs(v)*sc,x=v<0?cx-w:cx;
+        s+='<rect x="'+x.toFixed(1)+'" y="'+(y+5)+'" width="'+Math.max(w,0.5).toFixed(1)+'" height="14" fill="'+c+'" fill-opacity="0.8" rx="2"/>';
+      }
+      const ext=Math.max(Math.abs(r[1]),Math.abs(r[2]));
+      s+='<text x="'+(W-2)+'" y="'+(y+16)+'" font-size="11" text-anchor="end" fill="'+mut+'">±'+Math.round(ext).toLocaleString('es-ES')+'</text>';
+    });
+    s+='<text x="'+cx+'" y="'+(H-6)+'" font-size="11" text-anchor="middle" fill="'+mut+'">0 € (escala ±'+Math.round(mx).toLocaleString('es-ES')+' €)</text>';
+    const svg=$('tor');svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.style.minWidth='520px';svg.innerHTML=s;
+  }
+  function bindSeg(id,attr,target){$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$(target).value=b.dataset[attr];render()})}
+  bindSeg('perfil','n','N');bindSeg('integ','d','d');bindSeg('rev','q','q');
+  $('f').addEventListener('input',render);
+  $('f').addEventListener('submit',e=>e.preventDefault());
+  $('reset').addEventListener('click',()=>{for(const k in DEF)$(k).value=DEF[k];render()});
+  $('copy').addEventListener('click',()=>{const t=$('citeText').textContent;const done=()=>{$('copy').textContent='Cita copiada'};
+    try{navigator.clipboard.writeText(t).then(done,()=>{const r=document.createRange();r.selectNodeContents($('citeText'));const s=getSelection();s.removeAllRanges();s.addRange(r)})}catch(e){}});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+  render();
+})();
+</script>
