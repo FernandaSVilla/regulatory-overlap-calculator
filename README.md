@@ -20,7 +20,7 @@ En preparación: código de los índices y de los modelos (codigo/) y calculador
 Ver anexo A del ensayo. La matriz es la versión 1.0. Las correcciones se publicarán como
 nuevas versiones con su propio DOI.
 
-## Licencia
+## Licencia 
 
 | Parte | Licencia | Archivo |
 |---|---|---|
