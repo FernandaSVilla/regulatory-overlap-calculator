@@ -26,3 +26,4 @@ nuevas versiones con su propio DOI.
 |---|---|---|
 | Código | Apache License 2.0 | LICENSE |
 | Datos: datos/ | CC BY 4.0 | LICENSE-DATA |
+ 
