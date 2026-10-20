@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "Si usas este software o estos datos, cítalos así."
+title: "Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions"
+repository-code: "https://github.com/FernandaSVilla/regulatory-overlap-calculator"
+version: "1.1.0"
+date-released: "2026-10-16"
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+type: software
+authors:
+  - family-names: "Sánchez-Villa"
+    given-names: "María Fernanda"
+    orcid: "https://orcid.org/0009-0003-3410-3366"
+keywords:
+  - "Reglamento de IA"
+  - "inclusión financiera"
+  - "simplificación regulatoria"
+  - "crédito al consumo"
+  - "cuenta de pago básica"
