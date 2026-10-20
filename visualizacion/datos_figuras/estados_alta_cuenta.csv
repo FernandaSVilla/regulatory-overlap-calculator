@@ -1,0 +1,100 @@
+fila,estado,columna,marco,codigo
+1,Inicio de la solicitud,1,Cuenta básica,C
+1,Inicio de la solicitud,2,PBC/FT,E
+1,Inicio de la solicitud,3,Directrices EBA,C
+1,Inicio de la solicitud,4,RGPD,G
+1,Inicio de la solicitud,5,Reglamento de IA,0
+1,Inicio de la solicitud,6,DORA,0
+1,Inicio de la solicitud,7,eIDAS 2,0
+1,Inicio de la solicitud,8,Accesibilidad,G
+1,Inicio de la solicitud,9,Atención al cliente,C
+2,Abandono voluntario,1,Cuenta básica,0
+2,Abandono voluntario,2,PBC/FT,C
+2,Abandono voluntario,3,Directrices EBA,0
+2,Abandono voluntario,4,RGPD,0
+2,Abandono voluntario,5,Reglamento de IA,0
+2,Abandono voluntario,6,DORA,0
+2,Abandono voluntario,7,eIDAS 2,0
+2,Abandono voluntario,8,Accesibilidad,G
+2,Abandono voluntario,9,Atención al cliente,0
+3,Fallo técnico de canal o de proveedor,1,Cuenta básica,0
+3,Fallo técnico de canal o de proveedor,2,PBC/FT,0
+3,Fallo técnico de canal o de proveedor,3,Directrices EBA,C
+3,Fallo técnico de canal o de proveedor,4,RGPD,0
+3,Fallo técnico de canal o de proveedor,5,Reglamento de IA,0
+3,Fallo técnico de canal o de proveedor,6,DORA,C
+3,Fallo técnico de canal o de proveedor,7,eIDAS 2,0
+3,Fallo técnico de canal o de proveedor,8,Accesibilidad,0
+3,Fallo técnico de canal o de proveedor,9,Atención al cliente,0
+4,Documento no admitido,1,Cuenta básica,0
+4,Documento no admitido,2,PBC/FT,E
+4,Documento no admitido,3,Directrices EBA,E
+4,Documento no admitido,4,RGPD,0
+4,Documento no admitido,5,Reglamento de IA,0
+4,Documento no admitido,6,DORA,0
+4,Documento no admitido,7,eIDAS 2,0
+4,Documento no admitido,8,Accesibilidad,0
+4,Documento no admitido,9,Atención al cliente,0
+5,Diligencia debida incompleta,1,Cuenta básica,C
+5,Diligencia debida incompleta,2,PBC/FT,E
+5,Diligencia debida incompleta,3,Directrices EBA,E
+5,Diligencia debida incompleta,4,RGPD,0
+5,Diligencia debida incompleta,5,Reglamento de IA,0
+5,Diligencia debida incompleta,6,DORA,0
+5,Diligencia debida incompleta,7,eIDAS 2,0
+5,Diligencia debida incompleta,8,Accesibilidad,0
+5,Diligencia debida incompleta,9,Atención al cliente,0
+6,En revisión o revisión reforzada,1,Cuenta básica,0
+6,En revisión o revisión reforzada,2,PBC/FT,C
+6,En revisión o revisión reforzada,3,Directrices EBA,C
+6,En revisión o revisión reforzada,4,RGPD,G
+6,En revisión o revisión reforzada,5,Reglamento de IA,0
+6,En revisión o revisión reforzada,6,DORA,0
+6,En revisión o revisión reforzada,7,eIDAS 2,0
+6,En revisión o revisión reforzada,8,Accesibilidad,0
+6,En revisión o revisión reforzada,9,Atención al cliente,0
+7,Imposibilidad PBC/FT de establecer la relación,1,Cuenta básica,C
+7,Imposibilidad PBC/FT de establecer la relación,2,PBC/FT,C
+7,Imposibilidad PBC/FT de establecer la relación,3,Directrices EBA,0
+7,Imposibilidad PBC/FT de establecer la relación,4,RGPD,0
+7,Imposibilidad PBC/FT de establecer la relación,5,Reglamento de IA,0
+7,Imposibilidad PBC/FT de establecer la relación,6,DORA,0
+7,Imposibilidad PBC/FT de establecer la relación,7,eIDAS 2,0
+7,Imposibilidad PBC/FT de establecer la relación,8,Accesibilidad,0
+7,Imposibilidad PBC/FT de establecer la relación,9,Atención al cliente,0
+8,Expiración o revisión sin cierre,1,Cuenta básica,0
+8,Expiración o revisión sin cierre,2,PBC/FT,0
+8,Expiración o revisión sin cierre,3,Directrices EBA,0
+8,Expiración o revisión sin cierre,4,RGPD,0
+8,Expiración o revisión sin cierre,5,Reglamento de IA,0
+8,Expiración o revisión sin cierre,6,DORA,0
+8,Expiración o revisión sin cierre,7,eIDAS 2,0
+8,Expiración o revisión sin cierre,8,Accesibilidad,0
+8,Expiración o revisión sin cierre,9,Atención al cliente,0
+9,Desistimiento tras requerimiento,1,Cuenta básica,C
+9,Desistimiento tras requerimiento,2,PBC/FT,C
+9,Desistimiento tras requerimiento,3,Directrices EBA,0
+9,Desistimiento tras requerimiento,4,RGPD,0
+9,Desistimiento tras requerimiento,5,Reglamento de IA,0
+9,Desistimiento tras requerimiento,6,DORA,0
+9,Desistimiento tras requerimiento,7,eIDAS 2,0
+9,Desistimiento tras requerimiento,8,Accesibilidad,0
+9,Desistimiento tras requerimiento,9,Atención al cliente,0
+10,Denegación formal,1,Cuenta básica,E
+10,Denegación formal,2,PBC/FT,C
+10,Denegación formal,3,Directrices EBA,E
+10,Denegación formal,4,RGPD,G
+10,Denegación formal,5,Reglamento de IA,C
+10,Denegación formal,6,DORA,0
+10,Denegación formal,7,eIDAS 2,0
+10,Denegación formal,8,Accesibilidad,0
+10,Denegación formal,9,Atención al cliente,C
+11,Alta completada,1,Cuenta básica,E
+11,Alta completada,2,PBC/FT,C
+11,Alta completada,3,Directrices EBA,C
+11,Alta completada,4,RGPD,0
+11,Alta completada,5,Reglamento de IA,0
+11,Alta completada,6,DORA,0
+11,Alta completada,7,eIDAS 2,0
+11,Alta completada,8,Accesibilidad,0
+11,Alta completada,9,Atención al cliente,C
