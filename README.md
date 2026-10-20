@@ -4,6 +4,8 @@
 
 Una calculadora y una matriz abiertas para medir cuánto se superponen las normas europeas que regulan las decisiones automatizadas de un banco, cuánto cuesta cumplirlas a la vez y a quién deja fuera ese coste.
 
+*An open calculator and obligations matrix measuring how EU rules on banks' automated credit and account-opening decisions overlap, what complying with them together costs, and who may be left out. Documentation and calculator in Spanish.*
+
 **Calculadora en línea →** [fernandasvilla.github.io/regulatory-overlap-calculator](https://fernandasvilla.github.io/regulatory-overlap-calculator/calculadora/)  
 **Mapa en línea →** [fernandasvilla.github.io/regulatory-overlap-map](https://fernandasvilla.github.io/regulatory-overlap-map/)
 
