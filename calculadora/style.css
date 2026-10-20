@@ -1,0 +1,51 @@
+html { background: #fff; color: #000; }
+body {
+  font-family: "Times New Roman", "Liberation Serif", Times, serif;
+  font-size: 16px; line-height: 1.4;
+  max-width: 1000px; margin: 0 auto; padding: 20px 16px 40px;
+}
+h1 { font-size: 20px; font-weight: bold; margin: 0 0 4px; }
+h2 { font-size: 16px; font-weight: bold; margin: 28px 0 8px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+p { margin: 6px 0; }
+.meta { font-size: 14px; color: #333; }
+.cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; }
+.cols > * { min-width: 0; }
+@media (max-width: 760px) { .cols { grid-template-columns: minmax(0,1fr); } }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { padding: 3px 4px; vertical-align: baseline; text-align: left; }
+th { font-weight: normal; font-style: italic; border-bottom: 1px solid #000; }
+tr.grp td { padding-top: 10px; font-weight: bold; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.sym { font-style: italic; white-space: nowrap; color: #333; }
+input[type=number], select {
+  font: inherit; font-size: 15px; width: 7.5em; padding: 1px 3px;
+  border: 1px solid #777; border-radius: 0; background: #fff; color: #000; text-align: right;
+}
+select { width: auto; text-align: left; }
+button { font: inherit; font-size: 14px; border: 1px solid #000; background: #eee; border-radius: 0; padding: 2px 8px; cursor: pointer; }
+table.out td { border-bottom: 1px solid #ddd; }
+table.out tr.key td { font-weight: bold; border-bottom: 1px solid #000; }
+.note { font-size: 14px; color: #333; }
+.warn { font-size: 14px; border: 1px solid #000; padding: 4px 6px; margin: 8px 0; display: none; }
+figure { margin: 14px 0 0; }
+figcaption { font-size: 14px; margin-top: 4px; }
+svg { width: 100%; height: auto; display: block; }
+svg text { font-family: "Times New Roman", "Liberation Serif", Times, serif; font-size: 12px; fill: #000; }
+table.grid td, table.grid th { border-bottom: 1px solid #ddd; }
+.formula { font-family: "Courier New", Courier, monospace; font-size: 14px; white-space: pre-wrap; margin: 6px 0; }
+#params td:last-child, #params2 td:last-child { white-space: nowrap; }
+details { margin-top: 10px; }
+summary { cursor: pointer; font-style: italic; font-size: 15px; }
+table.out.big td { font-size: 16px; padding: 6px 4px; }
+table.out.big tr.key td { font-size: 17px; }
+.rel { font-weight: normal; font-size: 14px; color: #333; }
+.scroll { overflow-x: auto; }
+@media (max-width: 520px) {
+  #params td.sym, #params th:nth-child(2), #params2 td.sym { display: none; }
+  input[type=number] { width: 5.2em; }
+  select { max-width: 100%; }
+  table.out td.sym { display: none; }
+}.lic { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.lic a { display: inline-flex; align-items: stretch; border: 1px solid #000; font-size: 13px; line-height: 1.6; text-decoration: none; color: #000; }
+.lic a span { padding: 0 8px; }
+.lic a span:first-child { background: #eee; border-right: 1px solid #000; font-variant: small-caps; letter-spacing: .04em; }

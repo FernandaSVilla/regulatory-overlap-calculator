@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regulatory Overlap Calculator, v1.1.0 (matriz v1.2)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Regulatory Overlap Calculator</h1>
+<p style="margin:0 0 6px;font-size:17px">Importe mínimo rentable y coste de la superposición regulatoria en la IA bancaria</p>
+<p class="meta">Versión 1.1.0 · matriz v1.2 · M. F. Sánchez-Villa (2026) · <span id="doi">DOI asignado en el depósito</span></p>
+<p class="meta">Calcula el coste regulatorio por préstamo y el importe mínimo rentable con los supuestos que elijas. Los cálculos se hacen en el navegador; no se envía ni se guarda ningún dato. Código, datos y documentación: <a href="https://github.com/FernandaSVilla/regulatory-overlap-calculator" style="color:#000">github.com/FernandaSVilla/regulatory-overlap-calculator</a>. Mapa interactivo de las obligaciones y sus relaciones: <a href="https://fernandasvilla.github.io/regulatory-overlap-map/" style="color:#000">Regulatory Overlap Map</a>.</p>
+
+<div class="cols">
+<div>
+<h2>1. Parámetros</h2>
+<p class="note">Los valores iniciales son los del caso base. <button type="button" id="reset">Restablecer</button></p>
+<table id="params">
+  <tr><th>Parámetro</th><th>Símbolo</th><th class="num">Valor</th><th>Unidad</th></tr>
+  <tr class="grp"><td colspan="4">Préstamo y mercado</td></tr>
+  <tr><td>Tipo de interés del préstamo</td><td class="sym">r</td><td class="num"><input type="number" step="0.01" id="r"></td><td>% anual</td></tr>
+  <tr><td>Coste de financiación</td><td class="sym">f</td><td class="num"><input type="number" step="0.01" id="f"></td><td>% anual</td></tr>
+  <tr><td>Pérdida esperada (PD × LGD)</td><td class="sym">PD·LGD</td><td class="num"><input type="number" step="0.1" id="pdlgd"></td><td>% anual</td></tr>
+  <tr><td>Plazo</td><td class="sym">n</td><td class="num"><input type="number" step="0.5" min="0.5" id="n"></td><td>años</td></tr>
+  <tr class="grp"><td colspan="4">Cumplimiento</td></tr>
+  <tr><td>Diseño de la revisión humana</td><td class="sym"></td><td class="num" colspan="2" style="text-align:left">
+    <select id="design">
+      <option value="0.10">A petición, q = 0,10</option>
+      <option value="1">Previa, q = 1</option>
+      <option value="custom">Otra q</option>
+    </select></td></tr>
+  <tr><td>Coste por hora</td><td class="sym">P</td><td class="num"><input type="number" step="1" id="P"></td><td>€</td></tr>
+  <tr><td>Coste anual de cumplimiento por modelo</td><td class="sym">C_mod</td><td class="num"><input type="number" step="100" id="Cmod"></td><td>€ al año</td></tr>
+  <tr><td>Perfil de entidad</td><td class="sym"></td><td class="num" colspan="2" style="text-align:left">
+    <select id="profile">
+      <option value="250000">Gran grupo, 250.000</option>
+      <option value="25000">Mediana, 25.000</option>
+      <option value="2500">Cooperativa, 2.500</option>
+      <option value="custom">Otro N</option>
+    </select></td></tr>
+  <tr><td>Préstamos aprobados por modelo</td><td class="sym">N</td><td class="num"><input type="number" step="100" min="1" id="N"></td><td>al año</td></tr>
+  <tr><td>Nivel de integración</td><td class="sym"></td><td class="num" colspan="2" style="text-align:left">
+    <select id="integ">
+      <option value="0">Sin integración, 0</option>
+      <option value="0.315789474">Actual, 6/19</option>
+      <option value="0.473684211">Expediente único, 9/19</option>
+      <option value="custom">Otro d</option>
+    </select></td></tr>
+</table>
+<details>
+<summary>Parámetros avanzados</summary>
+<table id="params2">
+  <tr><td>Coste operativo de originación</td><td class="sym">c_op</td><td class="num"><input type="number" step="10" id="cop"></td><td>€ por préstamo</td></tr>
+  <tr><td>Tasa de aprobación</td><td class="sym">a</td><td class="num"><input type="number" step="1" min="1" max="99" id="a"></td><td>%</td></tr>
+  <tr><td>Denegaciones que pasan por revisión</td><td class="sym">q</td><td class="num"><input type="number" step="1" min="0" max="100" id="q"></td><td>%</td></tr>
+  <tr><td>Tiempo de una revisión significativa</td><td class="sym">t_rev</td><td class="num"><input type="number" step="0.05" id="trev"></td><td>horas</td></tr>
+  <tr><td>Tiempo de explicación y comunicación</td><td class="sym">t_x</td><td class="num"><input type="number" step="0.05" id="tx"></td><td>horas</td></tr>
+  <tr><td>Descuento por integración</td><td class="sym">d</td><td class="num"><input type="number" step="0.01" min="0" max="1" id="d"></td><td>proporción</td></tr>
+</table>
+</details>
+</div>
+
+<div>
+<h2>2. Resultados</h2>
+<div class="warn" id="warn">El margen neto es nulo o negativo: con estos parámetros el préstamo no es rentable a ningún importe.</div>
+<table class="out big">
+  <tr><td>Coste regulatorio por préstamo concedido</td><td class="num" id="o_ctot"></td></tr>
+  <tr><td>Importe mínimo rentable sin costes regulatorios</td><td class="num" id="o_L0"></td></tr>
+  <tr><td>Importe mínimo rentable con costes regulatorios</td><td class="num" id="o_L"></td></tr>
+  <tr class="key"><td>Aumento por costes regulatorios</td><td class="num"><span id="o_dL"></span> <span class="rel">(<span id="o_rel"></span>)</span></td></tr>
+</table>
+<p class="note">Desglose: coste por decisión <span id="o_creg"></span>; coste por modelo <span id="o_cmod"></span>; margen por euro prestado <span id="o_m"></span>. El coste por modelo supera al coste por decisión por debajo de <span id="o_Nstar"></span>.</p>
+<p class="note">Con los valores del caso base, perfil cooperativa, integración actual y revisión a petición, el aumento es de unos 309 €; con revisión previa, de unos 617 €.</p>
+
+<figure>
+  <svg id="fig1" viewBox="0 0 460 300" role="img" aria-label="Análisis de sensibilidad"></svg>
+  <figcaption>Figura 1. Cambio de L* al mover cada parámetro un 20 % hacia abajo (barra izquierda) y hacia arriba (barra derecha), con el resto fijo. Gris oscuro: parámetros regulatorios.</figcaption>
+</figure>
+</div>
+</div>
+
+<h2>3. Aumento del importe mínimo según el volumen de la entidad</h2>
+<figure style="margin-top:0; max-width:500px">
+  <svg id="fig2" viewBox="0 0 460 290" role="img" aria-label="ΔL* frente al volumen"></svg>
+  <figcaption>Figura 2. Aumento del importe mínimo frente al número de préstamos aprobados por modelo (escala logarítmica), para los tres niveles de integración y el diseño de revisión elegido. La línea vertical marca el volumen introducido.</figcaption>
+</figure>
+
+<h2>4. Fórmulas y supuestos</h2>
+<div class="formula">c_mod = C_mod · (1 − d) / N
+c_reg = [(1 − a) / a] · (q · t_rev + t_x) · P
+L*    = (c_op + c_reg + c_mod) / [(r − f − PD·LGD) · s · n]
+ΔL*   = (c_reg + c_mod) / [(r − f − PD·LGD) · s · n]
+N*    = C_mod · (1 − d) / c_reg</div>
+<p class="note">s es el saldo vivo medio de un préstamo con amortización francesa mensual, calculado mes a mes con el tipo r y el plazo n. El modelo no incluye comisiones, coste de capital, amortización anticipada ni descuento temporal, y debe leerse como orden de magnitud. Los perfiles de entidad son ilustrativos. Fuentes de los valores iniciales: Banco de España (tipo efectivo de nuevas operaciones de crédito al consumo, agosto de 2026), euríbor a doce meses (media de enero a septiembre de 2026), INE (EAES 2024) y Renda et al. (2021). Detalle en <code>codigo/modelos.py</code>.</p>
+<p class="note">Cita: Sánchez-Villa, M. F. (2026). <i>Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions</i> (versión 1.1.0) [Software y datos]. GitHub. https://github.com/FernandaSVilla/regulatory-overlap-calculator</p>
+
+<p class="lic"><a href="../LICENSE"><span>código</span><span>Apache 2.0</span></a><a href="../LICENSE-DATA"><span>datos</span><span>CC BY 4.0</span></a></p>
+
+<script src="script.js"></script>
+</body>
+</html>
