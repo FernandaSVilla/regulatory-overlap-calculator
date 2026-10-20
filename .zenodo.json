@@ -1,0 +1,39 @@
+{
+  "upload_type": "software",
+  "title": "Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions",
+  "version": "1.1.0",
+  "publication_date": "2026-10-20",
+  "creators": [
+    {
+      "name": "Sánchez-Villa, María Fernanda",
+      "orcid": "0009-0003-3410-3366"
+    }
+  ],
+  "access_right": "open",
+  "license": "apache-2.0",
+  "language": "spa",
+  "description": "<p>Open calculator and obligations matrix (v1.2, frozen on 14 October 2026) measuring how EU rules on banks' automated credit and account-opening decisions overlap and what complying with them together costs.</p><p>Includes the coded matrix of 50 obligations from ten EU and Spanish legal instruments and the 32 relations between them, the codebook, the Python models that reproduce all results (cost per loan, minimum profitable loan amount, sensitivity analysis, Monte Carlo and algorithmic-monoculture simulations) and the figures. Code under Apache 2.0; data (datos/ and visualizacion/datos_figuras/) under CC BY 4.0. Documentation and calculator in Spanish.</p><p>Online calculator: <a href=\"https://fernandasvilla.github.io/regulatory-overlap-calculator/\">fernandasvilla.github.io/regulatory-overlap-calculator</a></p>",
+  "keywords": [
+    "EU AI Act",
+    "GDPR",
+    "regulatory overlap",
+    "regulatory simplification",
+    "financial inclusion",
+    "consumer credit",
+    "basic payment account",
+    "human oversight",
+    "compliance costs"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/FernandaSVilla/regulatory-overlap-map",
+      "relation": "isSupplementedBy",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://fernandasvilla.github.io/regulatory-overlap-calculator/",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    }
+  ]
+}
