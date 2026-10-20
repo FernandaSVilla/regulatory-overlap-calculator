@@ -1,5 +1,5 @@
 "use strict";
-var DOI = ""; // escribir aquí el DOI de Zenodo, p. ej. "10.5281/zenodo.1234567"
+var DOI = "10.5281/zenodo.23496782"; // DOI de Zenodo de la versión 1.1.0
 
 var BASE = { r: 7.16, f: 2.72, pdlgd: 2, n: 3, cop: 150, a: 60, q: 10, trev: 0.5, tx: 0.1, P: 40, Cmod: 29277, N: 2500, d: 6 / 19 };
 var IDS = ["r", "f", "pdlgd", "n", "cop", "a", "q", "trev", "tx", "P", "Cmod", "N", "d"];
@@ -193,5 +193,5 @@ $("integ").addEventListener("change", function () {
 });
 IDS.forEach(function (k) { $(k).addEventListener("input", function () { syncSelects(); update(); }); });
 $("reset").addEventListener("click", reset);
-if (DOI) { $("doi").innerHTML = 'DOI: <a href="https://doi.org/' + DOI + '">' + DOI + '</a>'; }
+if (DOI) { $("doi").innerHTML = '<a class="doib" href="https://doi.org/' + DOI + '" target="_blank" rel="noopener" title="DOI"><span>DOI</span><span>' + DOI + '</span></a>'; }
 reset();

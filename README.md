@@ -46,10 +46,16 @@ Las simulaciones usan una semilla fija (2026), así que cada vez que las ejecute
 
 Los costes y los perfiles de entidad son supuestos razonados a partir de fuentes públicas, no datos medidos dentro de los bancos. Por eso existe la calculadora: para que cada quien ponga sus propios números. La codificación de la matriz la hice yo, y un jurista independiente la codificó a ciegas como prueba de fiabilidad. Si encuentras un error o no estás de acuerdo con algún código, me ayudaría mucho que abrieras un *issue*.
 
-## Licencia y cómo citar
+## Licencia
 
-El código (`calculadora/`, `codigo/`, `visualizacion/`) se publica con licencia Apache 2.0 y los datos (`datos/` y `visualizacion/datos_figuras/`) con CC BY 4.0. Si usas algo de aquí, cita la versión exacta que hayas usado. También puedes usar el botón **«Cite this repository»** de esta página, que genera la cita en APA y BibTeX a partir de `CITATION.cff`.
+El código (`calculadora/`, `codigo/`, `visualizacion/`) se publica con licencia Apache 2.0 y los datos (`datos/` y `visualizacion/datos_figuras/`) con CC BY 4.0.
 
-**Cómo citar**
+## Cómo citar
 
-> Sánchez-Villa, M. F. (2026). *Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions* (Version 1.1.0) [Software and data]. GitHub. https://github.com/FernandaSVilla/regulatory-overlap-calculator
+Este trabajo está archivado en Zenodo y tiene un DOI permanente.
+
+> Sánchez-Villa, M. F. (2026). *Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions* (Version 1.1.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23496781
+
+[![DOI](https://zenodo.org/badge/1403606532.svg)](https://doi.org/10.5281/zenodo.23496781)
+
+Ese DOI es el DOI de concepto: siempre lleva a la versión más reciente. Para citar exactamente la versión 1.1.0, usa https://doi.org/10.5281/zenodo.23496782. También puedes usar el botón **«Cite this repository»** de esta página, que genera la cita en APA y BibTeX.

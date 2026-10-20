@@ -49,3 +49,5 @@ table.out.big tr.key td { font-size: 17px; }
 .lic a { display: inline-flex; align-items: stretch; border: 1px solid #000; font-size: 13px; line-height: 1.6; text-decoration: none; color: #000; }
 .lic a span { padding: 0 8px; }
 .lic a span:first-child { background: #eee; border-right: 1px solid #000; font-variant: small-caps; letter-spacing: .04em; }
+
+.doib{display:inline-flex;align-items:stretch;border-radius:3px;overflow:hidden;font:600 12px/1.7 Arial,Helvetica,sans-serif;text-decoration:none;vertical-align:middle}.doib span{padding:0 7px}.doib span:first-child{background:#555;color:#fff}.doib span:last-child{background:#0e7fc0;color:#fff}.doib:hover{opacity:.85}

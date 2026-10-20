@@ -2,8 +2,9 @@ cff-version: 1.2.0
 message: "Si usas este software o estos datos, cítalos así."
 title: "Regulatory Overlap Calculator: obligations matrix and cost model for automated credit and account-opening decisions"
 repository-code: "https://github.com/FernandaSVilla/regulatory-overlap-calculator"
+doi: "10.5281/zenodo.23496781"
 version: "1.1.0"
-date-released: "2026-10-16"
+date-released: "2026-10-20"
 license:
   - Apache-2.0
   - CC-BY-4.0
